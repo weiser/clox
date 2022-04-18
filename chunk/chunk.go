@@ -5,6 +5,7 @@ import "github.com/weiser/clox/value"
 
 const (
 	OP_RETURN = iota
+	OP_CONSTANT
 )
 
 type Chunk struct {

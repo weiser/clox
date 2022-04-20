@@ -11,7 +11,7 @@ func ExampleDisassembleChunk_op_return() {
 	chunk.WriteChunk(&chnk, chunk.OP_RETURN, 0)
 	DisassembleChunk(&chnk, "test chunk")
 	// Output: == test chunk ==
-	// 0000: OP_RETURN
+	// 0000: 0000 OP_RETURN
 }
 
 func ExampleDisassembleChunk_op_constant() {
@@ -21,8 +21,10 @@ func ExampleDisassembleChunk_op_constant() {
 	idx := uint8(chunk.AddConstant(&chnk, 1234.0))
 	chunk.WriteChunk(&chnk, chunk.OP_CONSTANT, 0)
 	chunk.WriteChunk(&chnk, idx, 0)
+	chunk.WriteChunk(&chnk, chunk.OP_RETURN, 0)
 	DisassembleChunk(&chnk, "test chunk")
 	// Output: == test chunk ==
-	// 0000: OP_CONSTANT         0 1234.000000
+	// 0000: 0000 OP_CONSTANT         0 1234.000000
+	// 0002:    | OP_RETURN
 
 }

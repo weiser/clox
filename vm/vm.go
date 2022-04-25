@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/weiser/clox/chunk"
+	"github.com/weiser/clox/debug"
 	"github.com/weiser/clox/value"
 )
 
@@ -21,10 +22,12 @@ const (
 )
 
 var _vm *VM
+var _isDebug bool
 
 func InitVM() {
 	if _vm == nil {
 		_vm = &VM{}
+		_isDebug = true
 	}
 }
 
@@ -52,6 +55,11 @@ func run() InterpreterResult {
 	// e.g. an OP_CONSTANT might need to go to the next IP to get the index for
 	// the constant to load
 	for {
+		// if you want to renove debugging, set `_isDebug = false` in InitVM()
+		if _isDebug == true {
+			debug.DisassembleInstruction(_vm.Chunk, int(_vm.Ip[_vm.ip_idx]))
+		}
+
 		instruction := ReadByte()
 		switch instruction {
 		case chunk.OP_CONSTANT:

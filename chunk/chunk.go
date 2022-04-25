@@ -8,6 +8,7 @@ const (
 	OP_CONSTANT
 )
 
+// if we were really itching about performance, Lines and Code would be pointers to slices and not slices.
 type Chunk struct {
 	Code      []uint8
 	Lines     []int
@@ -28,4 +29,3 @@ func AddConstant(chunk *Chunk, v value.Value) int {
 	chunk.Constants = append(chunk.Constants, v)
 	return len(chunk.Constants) - 1
 }
-

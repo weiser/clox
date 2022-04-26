@@ -9,10 +9,13 @@ import (
 )
 
 type VM struct {
-	Chunk  *chunk.Chunk
-	Ip     []uint8
-	ip_idx int
+	Chunk    *chunk.Chunk
+	Ip       []uint8
+	ip_idx   int
+	Stack    [1024]value.Value
+	StackTop int
 }
+
 type InterpreterResult int
 
 const (
@@ -25,10 +28,15 @@ var _vm *VM
 var _isDebug bool
 
 func InitVM() {
+	_isDebug = true
 	if _vm == nil {
 		_vm = &VM{}
-		_isDebug = true
+		resetStack()
 	}
+}
+
+func resetStack() {
+	_vm.StackTop = 0
 }
 
 func FreeVM() {
@@ -40,6 +48,16 @@ func Interpret(chnk *chunk.Chunk) InterpreterResult {
 	_vm.Ip = _vm.Chunk.Code
 	_vm.ip_idx = 0
 	return run()
+}
+
+func Push(v value.Value) {
+	_vm.Stack[_vm.StackTop] = v
+	_vm.StackTop += 1
+}
+
+func Pop() value.Value {
+	_vm.StackTop -= 1
+	return _vm.Stack[_vm.StackTop+1]
 }
 
 // ReadByte reads the next byte of the instruction pointer,
@@ -57,6 +75,12 @@ func run() InterpreterResult {
 	for {
 		// if you want to renove debugging, set `_isDebug = false` in InitVM()
 		if _isDebug == true {
+			fmt.Print("        ")
+			for i := 0; i < _vm.StackTop; i += 1 {
+				fmt.Print("[ ")
+				value.PrintValue(_vm.Stack[i])
+				fmt.Println(" ]")
+			}
 			debug.DisassembleInstruction(_vm.Chunk, int(_vm.Ip[_vm.ip_idx]))
 		}
 
@@ -64,11 +88,12 @@ func run() InterpreterResult {
 		switch instruction {
 		case chunk.OP_CONSTANT:
 			constant := ReadConstant()
-			value.PrintValue(constant)
-			fmt.Println()
+			Push(constant)
 			// this will change, but we put it here only to have something to play with for now
 			return INTERPRET_OK
 		case chunk.OP_RETURN:
+			value.PrintValue(Pop())
+			fmt.Println()
 			return INTERPRET_OK
 		default:
 			return INTERPRET_COMPILE_ERROR
@@ -79,5 +104,3 @@ func run() InterpreterResult {
 func ReadConstant() value.Value {
 	return _vm.Chunk.Constants[ReadByte()]
 }
-
-// todoon pg 269

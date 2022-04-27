@@ -6,6 +6,7 @@ import "github.com/weiser/clox/value"
 const (
 	OP_RETURN = iota
 	OP_CONSTANT
+	OP_NEGATE
 )
 
 // if we were really itching about performance, Lines and Code would be pointers to slices and not slices.

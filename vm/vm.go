@@ -57,14 +57,15 @@ func Push(v value.Value) {
 
 func Pop() value.Value {
 	_vm.StackTop -= 1
-	return _vm.Stack[_vm.StackTop+1]
+	return _vm.Stack[_vm.StackTop]
 }
 
 // ReadByte reads the next byte of the instruction pointer,
 // incrementing where the next byte is read from for next time this is called
 func ReadByte() uint8 {
+	v := _vm.Ip[_vm.ip_idx]
 	_vm.ip_idx = _vm.ip_idx + 1
-	return _vm.Ip[_vm.ip_idx-1]
+	return v
 }
 
 func run() InterpreterResult {
@@ -89,12 +90,12 @@ func run() InterpreterResult {
 		case chunk.OP_CONSTANT:
 			constant := ReadConstant()
 			Push(constant)
-			// this will change, but we put it here only to have something to play with for now
-			return INTERPRET_OK
 		case chunk.OP_RETURN:
-			value.PrintValue(Pop())
-			fmt.Println()
+			//value.PrintValue(Pop())
+			//fmt.Println()
 			return INTERPRET_OK
+		case chunk.OP_NEGATE:
+			Push(-Pop())
 		default:
 			return INTERPRET_COMPILE_ERROR
 		}

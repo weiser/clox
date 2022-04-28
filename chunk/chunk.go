@@ -7,6 +7,10 @@ const (
 	OP_RETURN = iota
 	OP_CONSTANT
 	OP_NEGATE
+	OP_ADD
+	OP_SUBTRACT
+	OP_MULTIPLY
+	OP_DIVIDE
 )
 
 // if we were really itching about performance, Lines and Code would be pointers to slices and not slices.

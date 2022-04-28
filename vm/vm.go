@@ -29,10 +29,10 @@ var _isDebug bool
 
 func InitVM() {
 	_isDebug = true
-	if _vm == nil {
-		_vm = &VM{}
-		resetStack()
-	}
+	//if _vm == nil {
+	_vm = &VM{}
+	resetStack()
+	//}
 }
 
 func resetStack() {
@@ -68,6 +68,23 @@ func ReadByte() uint8 {
 	return v
 }
 
+func Binary_OP(op string) {
+	var v value.Value
+	b := Pop()
+	a := Pop()
+	switch op {
+	case "+":
+		v = a + b
+	case "-":
+		v = a - b
+	case "*":
+		v = a * b
+	case "/":
+		v = a / b
+	}
+	Push(v)
+}
+
 func run() InterpreterResult {
 	// BEWARE: IP refers to the initial instruction and we might need to change
 	// what that points to based on what instruction we are looking at,
@@ -82,7 +99,7 @@ func run() InterpreterResult {
 				value.PrintValue(_vm.Stack[i])
 				fmt.Println(" ]")
 			}
-			debug.DisassembleInstruction(_vm.Chunk, int(_vm.Ip[_vm.ip_idx]))
+			debug.DisassembleInstruction(_vm.Chunk, int(_vm.ip_idx))
 		}
 
 		instruction := ReadByte()
@@ -96,6 +113,14 @@ func run() InterpreterResult {
 			return INTERPRET_OK
 		case chunk.OP_NEGATE:
 			Push(-Pop())
+		case chunk.OP_ADD:
+			Binary_OP("+")
+		case chunk.OP_SUBTRACT:
+			Binary_OP("-")
+		case chunk.OP_MULTIPLY:
+			Binary_OP("*")
+		case chunk.OP_DIVIDE:
+			Binary_OP("/")
 		default:
 			return INTERPRET_COMPILE_ERROR
 		}

@@ -19,3 +19,9 @@ go build . # => creates `clox`
 ```
 ./clox
 ```
+
+## Running tests
+
+```
+go test ./...
+```

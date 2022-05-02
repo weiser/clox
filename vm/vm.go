@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/weiser/clox/chunk"
+	"github.com/weiser/clox/compiler"
 	"github.com/weiser/clox/debug"
 	"github.com/weiser/clox/value"
 )
@@ -41,6 +42,11 @@ func resetStack() {
 
 func FreeVM() {
 
+}
+
+func InterpretSource(source string) InterpreterResult {
+	compiler.Compile(source)
+	return INTERPRET_OK
 }
 
 func Interpret(chnk *chunk.Chunk) InterpreterResult {

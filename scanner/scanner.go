@@ -215,7 +215,7 @@ func identifierType() TokenType {
 }
 
 func checkKeyword(word string, tok TokenType) TokenType {
-	if _scanner.Source[_scanner.SourceStart_idx:(_scanner.SourceStart_idx+len(word))] == word {
+	if _scanner.Source[_scanner.SourceStart_idx:(_scanner.SourceCurrent_idx)] == word {
 		return tok
 	}
 	return TOKEN_IDENTIFIER
@@ -239,8 +239,6 @@ func number() Token {
 	}
 	return makeToken(TOKEN_NUMBER)
 }
-
-// start at 16.4 pg 299
 
 func makeString() Token {
 	for peek() != '"' && !isAtEnd() {

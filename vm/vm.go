@@ -28,8 +28,8 @@ const (
 var _vm *VM
 var _isDebug bool
 
-func InitVM() {
-	_isDebug = true
+func InitVM(isDebug bool) {
+	_isDebug = isDebug
 	//if _vm == nil {
 	_vm = &VM{}
 	resetStack()
@@ -44,9 +44,18 @@ func FreeVM() {
 
 }
 
-func InterpretSource(source string) InterpreterResult {
-	compiler.Compile(source)
-	return INTERPRET_OK
+func InterpretSource(source string, isDebug bool) InterpreterResult {
+	var _chunk chunk.Chunk
+	chunk.InitChunk(&_chunk)
+
+	if !compiler.Compile(source, &_chunk, _isDebug) {
+		return INTERPRET_COMPILE_ERROR
+	}
+
+	_vm.Chunk = &_chunk
+	_vm.Ip = _vm.Chunk.Code
+	return run()
+
 }
 
 func Interpret(chnk *chunk.Chunk) InterpreterResult {
@@ -98,7 +107,7 @@ func run() InterpreterResult {
 	// the constant to load
 	for {
 		// if you want to renove debugging, set `_isDebug = false` in InitVM()
-		if _isDebug == true {
+		if _isDebug {
 			fmt.Print("        ")
 			for i := 0; i < _vm.StackTop; i += 1 {
 				fmt.Print("[ ")
@@ -136,3 +145,5 @@ func run() InterpreterResult {
 func ReadConstant() value.Value {
 	return _vm.Chunk.Constants[ReadByte()]
 }
+
+// start on 15.3, pg 277

@@ -10,7 +10,9 @@ import (
 func DisassembleChunk(chnk *chunk.Chunk, name string) {
 	fmt.Println("==", name, "==")
 	for offset := 0; offset < len(chnk.Code); {
+		fmt.Println("offset is now: ", offset, "max len is: ", len(chnk.Code))
 		offset = DisassembleInstruction(chnk, offset)
+		fmt.Println("new offset is now: ", offset)
 	}
 }
 
@@ -52,7 +54,7 @@ func ConstantInstruction(name string, chnk *chunk.Chunk, offset int) int {
 	// why offset + 2 ?  offset points at the opcode initially.
 	// The constant portion of this instruction is at offset + 1.
 	//  We want to return the offset to the next instruction which
-	//   is one after the constant.
+	//   is one after thex constant.
 	return offset + 2
 
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func TestExecuteInstructions(t *testing.T) {
-	InitVM()
+	InitVM(false)
 	var chnk chunk.Chunk
 	chunk.InitChunk(&chnk)
 	idx := uint8(chunk.AddConstant(&chnk, 1234.0))
@@ -25,7 +25,7 @@ func TestExecuteInstructions(t *testing.T) {
 }
 
 func TestExecuteOP_NEGATE(t *testing.T) {
-	InitVM()
+	InitVM(false)
 	var chnk chunk.Chunk
 	chunk.InitChunk(&chnk)
 	idx := uint8(chunk.AddConstant(&chnk, 1234.0))
@@ -49,7 +49,7 @@ func TestExecuteOP_NEGATE(t *testing.T) {
 
 // TODO: DEBUG WHY THIS TEST FAILS
 func TestExecuteOP_BINARY_ADD(t *testing.T) {
-	InitVM()
+	InitVM(false)
 	var chnk chunk.Chunk
 	chunk.InitChunk(&chnk)
 	idx := uint8(chunk.AddConstant(&chnk, 2))
@@ -76,7 +76,7 @@ func TestExecuteOP_BINARY_ADD(t *testing.T) {
 }
 
 func TestExecuteOP_BINARY_SUB(t *testing.T) {
-	InitVM()
+	InitVM(false)
 	var chnk chunk.Chunk
 	chunk.InitChunk(&chnk)
 	idx := uint8(chunk.AddConstant(&chnk, 2))
@@ -102,7 +102,7 @@ func TestExecuteOP_BINARY_SUB(t *testing.T) {
 }
 
 func TestExecuteOP_BINARY_MULTIPLY(t *testing.T) {
-	InitVM()
+	InitVM(false)
 	var chnk chunk.Chunk
 	chunk.InitChunk(&chnk)
 	idx := uint8(chunk.AddConstant(&chnk, 2))
@@ -129,7 +129,7 @@ func TestExecuteOP_BINARY_MULTIPLY(t *testing.T) {
 }
 
 func TestExecuteOP_BINARY_DIVIDE(t *testing.T) {
-	InitVM()
+	InitVM(false)
 	var chnk chunk.Chunk
 	chunk.InitChunk(&chnk)
 	idx := uint8(chunk.AddConstant(&chnk, 2))
@@ -157,7 +157,7 @@ func TestExecuteOP_BINARY_DIVIDE(t *testing.T) {
 
 // Test that (2+1)*(3+4) = 21
 func TestExecuteOP_BINARY_ADD_MULTIPLY(t *testing.T) {
-	InitVM()
+	InitVM(false)
 	var chnk chunk.Chunk
 	chunk.InitChunk(&chnk)
 	idx := uint8(chunk.AddConstant(&chnk, 2))

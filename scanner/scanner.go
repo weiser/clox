@@ -73,13 +73,13 @@ func InitScanner(source string) {
 }
 
 func ScanToken() Token {
-	skipWhitespace()
-	_scanner.SourceStart_idx = _scanner.SourceCurrent_idx
 	if isAtEnd() {
 		return makeToken(TOKEN_EOF)
 	}
+	skipWhitespace()
+	_scanner.SourceStart_idx = _scanner.SourceCurrent_idx
 
-	c := advance()
+	c := Advance()
 	if isDigit(c) {
 		return number()
 	}
@@ -126,25 +126,23 @@ func ScanToken() Token {
 func skipWhitespace() {
 	for {
 		r := peek()
-		if isDigit(r) {
-			number()
-			return
-		}
 		switch r {
 		case ' ':
-			advance()
+			Advance()
 		case '\r':
-			advance()
+			Advance()
 		case '\t':
-			advance()
+			Advance()
 		case '\n':
 			_scanner.Line += 1
-			advance()
+			Advance()
 		case '/':
 			if peekNext() == '/' {
 				for peek() != '\n' && !isAtEnd() {
-					advance()
+					Advance()
 				}
+			} else {
+				return
 			}
 		case '"':
 			makeString()
@@ -161,7 +159,7 @@ func isAlpha(r rune) bool {
 
 func identifier() Token {
 	for !isAtEnd() && (isAlpha(peek()) || isDigit(peek())) {
-		advance()
+		Advance()
 	}
 	return makeToken(identifierType())
 }
@@ -226,15 +224,15 @@ func isDigit(r rune) bool {
 }
 
 func number() Token {
-	for isDigit(peek()) {
-		advance()
+	for !isAtEnd() && isDigit(peek()) {
+		Advance()
 	}
 
-	if peek() == '.' && isDigit(peekNext()) {
-		advance()
+	if !isAtEnd() && peek() == '.' && isDigit(peekNext()) {
+		Advance()
 
 		for isDigit(peek()) {
-			advance()
+			Advance()
 		}
 	}
 	return makeToken(TOKEN_NUMBER)
@@ -245,12 +243,12 @@ func makeString() Token {
 		if peek() == '\n' {
 			_scanner.Line += 1
 		}
-		advance()
+		Advance()
 	}
 	if isAtEnd() {
 		return errorToken("unterminated string")
 	}
-	advance()
+	Advance()
 	return makeToken(TOKEN_STRING)
 }
 
@@ -276,7 +274,7 @@ func matchIfElse(expected rune, ttIf TokenType, ttElse TokenType) TokenType {
 	return ttIf
 }
 
-func advance() rune {
+func Advance() rune {
 	if isAtEnd() {
 		return 0
 	}
@@ -287,12 +285,12 @@ func advance() rune {
 func isAtEnd() bool {
 	// calling `len` each time this is run, instead of storing the length of the Source (which never changes)
 	// isn't as efficient, but i'm trying to keep this code as close to the c iimplementation as i can
-	return len(_scanner.Source) == _scanner.SourceCurrent_idx+1
+	return len(_scanner.Source) == _scanner.SourceCurrent_idx
 }
 
 func makeToken(_type TokenType) Token {
 	return Token{Type: _type,
-		Value: _scanner.Source[_scanner.SourceStart_idx : _scanner.SourceCurrent_idx+1],
+		Value: _scanner.Source[_scanner.SourceStart_idx:_scanner.SourceCurrent_idx],
 		Line:  _scanner.Line}
 }
 

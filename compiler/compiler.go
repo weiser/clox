@@ -166,7 +166,7 @@ func binary() {
 
 func number() {
 	_value, _ := strconv.ParseFloat(_parser.Previous.Value, 64)
-	emitConstant(value.Value(_value))
+	emitConstant(value.NumberVal(_value))
 }
 
 func emitConstant(_value value.Value) {

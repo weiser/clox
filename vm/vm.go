@@ -75,6 +75,18 @@ func Pop() value.Value {
 	return _vm.Stack[_vm.StackTop]
 }
 
+func Peek(distance int) value.Value {
+	return _vm.Stack[_vm.StackTop-distance-1]
+}
+
+func runtimeError(msg string, a ...any) {
+	fmt.Println(msg, a)
+	instruction := _vm.Ip[_vm.ip_idx]
+	_line := _vm.Chunk.Lines[instruction]
+	fmt.Printf("[line %v] in script\n", _line)
+	resetStack()
+}
+
 // ReadByte reads the next byte of the instruction pointer,
 // incrementing where the next byte is read from for next time this is called
 func ReadByte() uint8 {
@@ -85,19 +97,24 @@ func ReadByte() uint8 {
 
 func Binary_OP(op string) {
 	var v value.Value
-	b := Pop()
-	a := Pop()
-	switch op {
-	case "+":
-		v = a + b
-	case "-":
-		v = a - b
-	case "*":
-		v = a * b
-	case "/":
-		v = a / b
+	if !value.IsNumber(Peek(0)) || !value.IsNumber(Peek(1)) {
+		runtimeError("Operands must be numbers")
+
+	} else {
+		b := value.AsNumber(Pop())
+		a := value.AsNumber(Pop())
+		switch op {
+		case "+":
+			v = value.NumberVal(a + b)
+		case "-":
+			v = value.NumberVal(a - b)
+		case "*":
+			v = value.NumberVal(a * b)
+		case "/":
+			v = value.NumberVal(a / b)
+		}
+		Push(v)
 	}
-	Push(v)
 }
 
 func run() InterpreterResult {
@@ -127,7 +144,11 @@ func run() InterpreterResult {
 			//fmt.Println()
 			return INTERPRET_OK
 		case chunk.OP_NEGATE:
-			Push(-Pop())
+			if !value.IsNumber(Peek(0)) {
+				runtimeError("Operand must be a number")
+				return INTERPRET_RUNTIME_ERROR
+			}
+			Push(value.NumberVal(-value.AsNumber(Pop())))
 		case chunk.OP_ADD:
 			Binary_OP("+")
 		case chunk.OP_SUBTRACT:

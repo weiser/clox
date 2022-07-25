@@ -61,5 +61,5 @@ func IsNumber(v Value) bool {
 type ValueArray []Value
 
 func PrintValue(v Value) {
-	fmt.Printf("%f", v)
+	fmt.Printf("%f", AsNumber(v))
 }

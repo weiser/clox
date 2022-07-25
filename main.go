@@ -22,8 +22,6 @@ func main() {
 
 	programArgs := flag.Args()
 
-	fmt.Println("debug is: %v", *debugPtr)
-
 	if len(programArgs) == 0 {
 		Repl(*debugPtr)
 	} else if len(programArgs) == 1 {

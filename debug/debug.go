@@ -10,9 +10,7 @@ import (
 func DisassembleChunk(chnk *chunk.Chunk, name string) {
 	fmt.Println("==", name, "==")
 	for offset := 0; offset < len(chnk.Code); {
-		fmt.Println("offset is now: ", offset, "max len is: ", len(chnk.Code))
 		offset = DisassembleInstruction(chnk, offset)
-		fmt.Println("new offset is now: ", offset)
 	}
 }
 

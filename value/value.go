@@ -61,5 +61,12 @@ func IsNumber(v Value) bool {
 type ValueArray []Value
 
 func PrintValue(v Value) {
-	fmt.Printf("%f", AsNumber(v))
+	switch v.Type {
+	case VAL_BOOL:
+		fmt.Printf("%v", AsBool(v))
+	case VAL_NIL:
+		fmt.Printf("nil")
+	case VAL_NUMBER:
+		fmt.Printf("%f", AsNumber(v))
+	}
 }

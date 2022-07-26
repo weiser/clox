@@ -69,17 +69,17 @@ func init() {
 		scanner.TOKEN_AND:           ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_CLASS:         ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_ELSE:          ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
-		scanner.TOKEN_FALSE:         ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
+		scanner.TOKEN_FALSE:         ParseRule{Prefix: literal, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_FOR:           ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_FUN:           ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_IF:            ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
-		scanner.TOKEN_NIL:           ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
+		scanner.TOKEN_NIL:           ParseRule{Prefix: literal, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_OR:            ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_PRINT:         ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_RETURN:        ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_SUPER:         ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_THIS:          ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
-		scanner.TOKEN_TRUE:          ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
+		scanner.TOKEN_TRUE:          ParseRule{Prefix: literal, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_VAR:           ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_WHILE:         ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_ERROR:         ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
@@ -161,6 +161,17 @@ func binary() {
 		emitByte(chunk.OP_DIVIDE)
 	default:
 		return
+	}
+}
+
+func literal() {
+	switch _parser.Previous.Type {
+	case scanner.TOKEN_FALSE:
+		emitByte(chunk.OP_FALSE)
+	case scanner.TOKEN_NIL:
+		emitByte(chunk.OP_NIL)
+	case scanner.TOKEN_TRUE:
+		emitByte(chunk.OP_TRUE)
 	}
 }
 

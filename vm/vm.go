@@ -54,6 +54,8 @@ func InterpretSource(source string, isDebug bool) InterpreterResult {
 
 	_vm.Chunk = &_chunk
 	_vm.Ip = _vm.Chunk.Code
+	_vm.ip_idx = 0
+	_vm.StackTop = 0
 	return run()
 
 }
@@ -62,6 +64,7 @@ func Interpret(chnk *chunk.Chunk) InterpreterResult {
 	_vm.Chunk = chnk
 	_vm.Ip = _vm.Chunk.Code
 	_vm.ip_idx = 0
+	_vm.StackTop = 0
 	return run()
 }
 
@@ -157,6 +160,12 @@ func run() InterpreterResult {
 			Binary_OP("*")
 		case chunk.OP_DIVIDE:
 			Binary_OP("/")
+		case chunk.OP_NIL:
+			Push(value.BoolNil())
+		case chunk.OP_FALSE:
+			Push(value.BoolVal(false))
+		case chunk.OP_TRUE:
+			Push(value.BoolVal(true))
 		default:
 			return INTERPRET_COMPILE_ERROR
 		}

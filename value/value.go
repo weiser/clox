@@ -58,6 +58,23 @@ func IsNumber(v Value) bool {
 	return v.Type == VAL_NUMBER
 }
 
+func ValuesEqual(a, b Value) bool {
+	if a.Type != b.Type {
+		return false
+	}
+	switch a.Type {
+	case VAL_BOOL:
+		return AsBool(a) == AsBool(b)
+	case VAL_NIL:
+		return true
+	case VAL_NUMBER:
+		return AsNumber(a) == AsNumber(b)
+	default:
+		return false
+	}
+
+}
+
 type ValueArray []Value
 
 func PrintValue(v Value) {

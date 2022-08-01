@@ -58,17 +58,19 @@ func init() {
 		scanner.TOKEN_SLASH:         ParseRule{Prefix: nil, Infix: binary, Prec: PREC_FACTOR},
 		scanner.TOKEN_STAR:          ParseRule{Prefix: nil, Infix: binary, Prec: PREC_FACTOR},
 		scanner.TOKEN_BANG:          ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
-		scanner.TOKEN_BANG_EQUAL:    ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
-		scanner.TOKEN_GREATER:       ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
-		scanner.TOKEN_GREATER_EQUAL: ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
-		scanner.TOKEN_LESS:          ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
-		scanner.TOKEN_LESS_EQUAL:    ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
+		scanner.TOKEN_BANG_EQUAL:    ParseRule{Prefix: nil, Infix: binary, Prec: PREC_EQUALITY},
+		scanner.TOKEN_GREATER:       ParseRule{Prefix: nil, Infix: binary, Prec: PREC_COMPARISON},
+		scanner.TOKEN_GREATER_EQUAL: ParseRule{Prefix: nil, Infix: binary, Prec: PREC_COMPARISON},
+		scanner.TOKEN_LESS:          ParseRule{Prefix: nil, Infix: binary, Prec: PREC_COMPARISON},
+		scanner.TOKEN_LESS_EQUAL:    ParseRule{Prefix: nil, Infix: binary, Prec: PREC_COMPARISON},
 		scanner.TOKEN_IDENTIFIER:    ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_STRING:        ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_NUMBER:        ParseRule{Prefix: number, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_AND:           ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_CLASS:         ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_ELSE:          ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
+		scanner.TOKEN_EQUAL:         ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
+		scanner.TOKEN_EQUAL_EQUAL:   ParseRule{Prefix: nil, Infix: binary, Prec: PREC_EQUALITY},
 		scanner.TOKEN_FALSE:         ParseRule{Prefix: literal, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_FOR:           ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_FUN:           ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
@@ -151,6 +153,18 @@ func binary() {
 	rule := getRule(operatorType)
 	parsePrecedence(rule.Prec + 1)
 	switch operatorType {
+	case scanner.TOKEN_BANG_EQUAL:
+		emitBytes(chunk.OP_EQUAL, chunk.OP_NEGATE)
+	case scanner.TOKEN_EQUAL_EQUAL:
+		emitByte(chunk.OP_EQUAL)
+	case scanner.TOKEN_GREATER:
+		emitByte(chunk.OP_GREATER)
+	case scanner.TOKEN_GREATER_EQUAL:
+		emitBytes(chunk.OP_LESS, chunk.OP_NEGATE)
+	case scanner.TOKEN_LESS:
+		emitByte(chunk.OP_LESS)
+	case scanner.TOKEN_LESS_EQUAL:
+		emitBytes(chunk.OP_GREATER, chunk.OP_NEGATE)
 	case scanner.TOKEN_PLUS:
 		emitByte(chunk.OP_ADD)
 	case scanner.TOKEN_MINUS:

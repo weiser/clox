@@ -107,6 +107,10 @@ func Binary_OP(op string) {
 		b := value.AsNumber(Pop())
 		a := value.AsNumber(Pop())
 		switch op {
+		case ">":
+			v = value.BoolVal(a > b)
+		case "<":
+			v = value.BoolVal(a < b)
 		case "+":
 			v = value.NumberVal(a + b)
 		case "-":
@@ -152,6 +156,10 @@ func run() InterpreterResult {
 				return INTERPRET_RUNTIME_ERROR
 			}
 			Push(value.NumberVal(-value.AsNumber(Pop())))
+		case chunk.OP_GREATER:
+			Binary_OP(">")
+		case chunk.OP_LESS:
+			Binary_OP("<")
 		case chunk.OP_ADD:
 			Binary_OP("+")
 		case chunk.OP_SUBTRACT:
@@ -164,6 +172,10 @@ func run() InterpreterResult {
 			Push(value.BoolNil())
 		case chunk.OP_FALSE:
 			Push(value.BoolVal(false))
+		case chunk.OP_EQUAL:
+			b := Pop()
+			a := Pop()
+			Push(value.BoolVal(value.ValuesEqual(a, b)))
 		case chunk.OP_TRUE:
 			Push(value.BoolVal(true))
 		default:

@@ -151,11 +151,19 @@ func run() InterpreterResult {
 			//fmt.Println()
 			return INTERPRET_OK
 		case chunk.OP_NEGATE:
-			if !value.IsNumber(Peek(0)) {
-				runtimeError("Operand must be a number")
+			v := Peek(0)
+			switch {
+			case value.IsNumber(v):
+				Push(value.NumberVal(-value.AsNumber(Pop())))
+			case value.IsBool(v):
+				Push(value.BoolVal(!value.AsBool(Pop())))
+			case value.IsNil(v):
+				Pop()
+				Push(value.BoolVal(true))
+			default:
+				runtimeError("Operand must be a number, or truthy")
 				return INTERPRET_RUNTIME_ERROR
 			}
-			Push(value.NumberVal(-value.AsNumber(Pop())))
 		case chunk.OP_GREATER:
 			Binary_OP(">")
 		case chunk.OP_LESS:

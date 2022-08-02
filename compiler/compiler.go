@@ -57,7 +57,7 @@ func init() {
 		scanner.TOKEN_SEMICOLON:     ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_SLASH:         ParseRule{Prefix: nil, Infix: binary, Prec: PREC_FACTOR},
 		scanner.TOKEN_STAR:          ParseRule{Prefix: nil, Infix: binary, Prec: PREC_FACTOR},
-		scanner.TOKEN_BANG:          ParseRule{Prefix: nil, Infix: nil, Prec: PREC_NONE},
+		scanner.TOKEN_BANG:          ParseRule{Prefix: unary, Infix: nil, Prec: PREC_NONE},
 		scanner.TOKEN_BANG_EQUAL:    ParseRule{Prefix: nil, Infix: binary, Prec: PREC_EQUALITY},
 		scanner.TOKEN_GREATER:       ParseRule{Prefix: nil, Infix: binary, Prec: PREC_COMPARISON},
 		scanner.TOKEN_GREATER_EQUAL: ParseRule{Prefix: nil, Infix: binary, Prec: PREC_COMPARISON},
@@ -221,6 +221,8 @@ func unary() {
 	switch operatorType {
 	case scanner.TOKEN_MINUS:
 		// functionally, this has us compute the expression, then negate it
+		emitByte(chunk.OP_NEGATE)
+	case scanner.TOKEN_BANG:
 		emitByte(chunk.OP_NEGATE)
 	default:
 		return

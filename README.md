@@ -17,7 +17,7 @@ go build . # => creates `clox`
 ## Running the interpreter
 
 ```
-./clox
+./clox [-debug] # -debug will output vm instructions
 ```
 
 ## Running tests
